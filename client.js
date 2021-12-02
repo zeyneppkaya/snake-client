@@ -1,33 +1,30 @@
-const net = require("net");
+const net = require('net');
+const { IP, PORT , up , right , down , left } = require('./constants');
 
-// establishes a connection with the game server
-const client = {
-    connect: function () {
-        const conn = net.createConnection({
-            host: '165.227.47.243',
-            port: 50541
-        });
+const connect = () => {
+    const conn = net.createConnection({
+        host: IP,
+        port: PORT
+    });
 
-        /* interpret incoming data as text */
-        conn.setEncoding('utf8');
+    conn.setEncoding('utf8');
 
-        /* CONNECT event */
-        conn.on("connect", () => {
-            console.log("Successfully connected to game server.");
-            conn.write('Name: ZK');
-            setInterval(() => {
-                conn.write('Move: up');
-            }, 500);
-        });
+    conn.write('Name: ZK')
 
-        /* DATA event */
-        conn.on('data', (data) => {
-            console.log(`New message from the server: ${data}`);
-        });
+    setInterval(() => { conn.write(`${up}`) }, 700);
+    setInterval(() => { conn.write(`${right}`) }, 700);
+    setInterval(() => { conn.write(`${down}`) }, 700);
+    setInterval(() => { conn.write(`${left}`) }, 700);
 
-        return conn;
-    }
-};
+    conn.on('data', (data) => {
+        console.log('New message from the server: ' + data);
+    });
 
-module.exports = client;
+    conn.on('connect', () => {
+        console.log("You are succesfully connected to the server:)");
+    });
+    return conn;
+}
+
+module.exports = connect;
 
